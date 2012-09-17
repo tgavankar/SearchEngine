@@ -43,11 +43,11 @@ public class InvertedListFactory {
 					le.setDocid(Integer.parseInt(split[0]));
 					le.setTotalFreq(Integer.parseInt(split[1]));
 					le.setDocLength(Integer.parseInt(split[2]));
-					List<Integer> positions = new ArrayList<Integer>();
+					Set<Integer> positions = new HashSet<Integer>();
 					for(int i=3; i<split.length; i++) {
 						positions.add(Integer.parseInt(split[i]));
 					}
-					le.setPositionList(positions);
+					le.setPositionSet(positions);
 					invList.addEntry(le);
 				}
 				lineNumber++;

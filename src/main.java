@@ -39,7 +39,7 @@ public class main {
 		
 		System.out.println("asdf");*/
 		
-		Node root = qp.parse("the barack obama from within the white house");		
+		Node root = qp.parse("#NEAR/1(atari games)");
 		Map<Integer, Integer> ran = qr.run(root);
 		
 		for (Entry<Integer, Integer> entry  : entriesSortedByValues(ran)) {

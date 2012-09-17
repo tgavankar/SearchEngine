@@ -6,7 +6,7 @@ public class InvertedListEntry {
 	private int docid;
 	private int totalFreq;
 	private int docLength;
-	private List<Integer> positionList;
+	private Set<Integer> positionSet;
 	
 	public int getDocid() {
 		return docid;
@@ -26,10 +26,10 @@ public class InvertedListEntry {
 	public void setDocLength(int docLength) {
 		this.docLength = docLength;
 	}
-	public List<Integer> getPositionSet() {
-		return positionList;
+	public Set<Integer> getPositionSet() {
+		return positionSet;
 	}
-	public void setPositionList(List<Integer> positionList) {
-		this.positionList = positionList;
+	public void setPositionSet(Set<Integer> positionSet) {
+		this.positionSet = positionSet;
 	}
 }
