@@ -1,66 +1,77 @@
+import java.io.*;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 
+/**
+ * Run with -Xmx512m (can be done with 300m).
+ *
+ */
 public class main {
 	public static void main(String[] args) {
 		boolean ranked = true;
-		QueryParser qp = new QueryParser();
-		QueryRunner qr = new QueryRunner(ranked);
-		/*Node root = qp.parse("#AND(#AND(george bush) #OR(#AND(barack obama) #AND(bill clinton) #NEAR/10(white house)))");
-		//assert(root.toString().equals("AND(AND([george][bush])OR(AND([barack][obama])AND([bill][clinton])NEAR:10([white][house])))"));
-		System.out.println(root);
+		int numResults = 100;
 		
-		root = qp.parse("the barack obama from within the white house");
-		System.out.println(root);
+		Map<Integer, String> queries = parseQueries("queries.txt");
 		
-		root = qp.parse("#AND(#AND(george bush) #OR(#AND(barack.title obama.title) #AND(hilary bill-clinton will) #NEAR/10(white-house lawn)))");
-		System.out.println(root);*/
-		
-		/*HashMap<String, Integer> firstMap = new HashMap<String, Integer>();
-		firstMap.put("a", 1);
-		firstMap.put("b", 1);
-		firstMap.put("c", 1);
-		
-		HashMap<String, Integer> secondMap = new HashMap<String, Integer>();
-		secondMap.put("b", 2);
-		secondMap.put("c", 1);
-		secondMap.put("d", 1);
-		
-		HashMap<String, Integer> thirdMap = new HashMap<String, Integer>();
-		thirdMap.put("b", 3);
-		
-		firstMap.keySet().retainAll(secondMap.keySet());
-		firstMap.keySet().retainAll(thirdMap.keySet());
-		
-		System.out.println("asdf");*/
-		
-		Node root = qp.parse("#NEAR/1(atari games)");
-		Map<Integer, Integer> ran = qr.run(root);
-		
-		for (Entry<Integer, Integer> entry  : entriesSortedByValues(ran)) {
-		    System.out.println(entry.getKey()+":"+entry.getValue());
+		System.out.println("START");
+		try {
+			 BufferedWriter bw = new BufferedWriter(new FileWriter(new File("AND_BOW_RANKED.txt"), false));
+			
+			for(Entry<Integer, String> e : queries.entrySet()) {
+				QueryParser qp = new QueryParser();
+				QueryRunner qr = new QueryRunner(ranked);
+				Node root = qp.parse(e.getValue());
+				List<Integer[]> result = qr.run(root);
+				for(int i=0; i<Math.min(numResults, result.size()); i++) {
+					bw.write(e.getKey() + " ");
+					bw.write("Q0 ");
+					bw.write(result.get(i)[0] + " ");
+					bw.write((i+1) + " ");
+					bw.write(result.get(i)[1] + " ");
+					bw.write("run-1");
+					bw.newLine();
+				}
+			}
+	        bw.close();
+		} 
+		catch (Exception e) {
+			System.err.println(e);
 		}
 
+		
+		System.out.println("SUCCESS");
 	}
 	
-	// Source: http://stackoverflow.com/questions/2864840/treemap-sort-by-value
-	static <K extends Comparable<? super K>,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
-        SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
-            new Comparator<Map.Entry<K,V>>() {
-                @Override public int compare(Map.Entry<K,V> e1, Map.Entry<K,V> e2) {
-                    int res = e2.getValue().compareTo(e1.getValue());
-                    int res2 = e1.getKey().compareTo(e2.getKey());
-                    return res != 0 ? res : (res2 != 0 ? res2 : 1); // Special fix to preserve items with equal values
-                }
-            }
-        );
-        sortedEntries.addAll(map.entrySet());
-        return sortedEntries;
-    }
+	private static Map<Integer, String> parseQueries(String filename) {
+		Map<Integer, String> queries = new TreeMap<Integer, String>();
+		try {
+			FileInputStream fstream = new FileInputStream(filename);
+	
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String strLine;
+			String[] split;
 
+			while ((strLine = br.readLine()) != null)   {
+				split = strLine.split(":");
+				if(split.length > 0) {
+					queries.put(Integer.parseInt(split[0]), split[1]);
+				}
+			}
+	
+			in.close();
+		} catch (Exception e){
+			System.err.println("Error: " + e.getMessage());
+		}
+		return queries;
+	}
 }

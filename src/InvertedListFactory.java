@@ -55,7 +55,7 @@ public class InvertedListFactory {
 
 			in.close();
 		} catch (Exception e){
-			System.err.println("Error: " + e.getMessage());
+			//System.err.println("Error: " + e.getMessage());
 			return invList;
 		}
 		return invList;

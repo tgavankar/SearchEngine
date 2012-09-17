@@ -1,9 +1,13 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.Map.Entry;
 
 
 public class QueryRunner {	
@@ -18,9 +22,20 @@ public class QueryRunner {
 		this(false);
 	}
 	
-	public Map<Integer, Integer> run(Node root) {
+	public List<Integer[]> run(Node root) {
 		List<Map<Integer, Integer>> matches = new ArrayList<Map<Integer, Integer>>();
-		return run(root, matches);
+		List<Integer[]> out = new ArrayList<Integer[]>();
+		
+		Map<Integer, Integer> results = run(root, matches);
+		
+		for (Entry<Integer, Integer> entry  : entriesSortedByValues(results)) {
+			Integer[] outa = new Integer[2];
+			outa[0] = entry.getKey();
+			outa[1] = entry.getValue();
+		    out.add(outa);
+		}
+		
+		return out;
 	}
 	
 	private Map<Integer, Integer> run(Node root, List<Map<Integer, Integer>> matches) {
@@ -124,4 +139,19 @@ public class QueryRunner {
 			return false;
 		}
 	}
+	
+	// Source: http://stackoverflow.com/questions/2864840/treemap-sort-by-value
+	static <K extends Comparable<? super K>,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
+        SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
+            new Comparator<Map.Entry<K,V>>() {
+                @Override public int compare(Map.Entry<K,V> e1, Map.Entry<K,V> e2) {
+                    int res = e2.getValue().compareTo(e1.getValue());
+                    int res2 = e1.getKey().compareTo(e2.getKey());
+                    return res != 0 ? res : (res2 != 0 ? res2 : 1); // Special fix to preserve items with equal values
+                }
+            }
+        );
+        sortedEntries.addAll(map.entrySet());
+        return sortedEntries;
+    }
 }
