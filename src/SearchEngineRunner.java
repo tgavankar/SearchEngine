@@ -32,6 +32,9 @@ public class SearchEngineRunner {
 		boolean ranked = Config.ranked;
 		int numResults = Config.numResults;
 
+		QueryParser qp = new QueryParser();
+		QueryRunner qr = new QueryRunner(ranked);
+		
 		// Grab and print starting time.
 		long startTime = System.currentTimeMillis();
 		System.out.println("START " + startTime);
@@ -42,8 +45,6 @@ public class SearchEngineRunner {
 			 BufferedWriter bw = new BufferedWriter(new FileWriter(new File(Config.outFile), false));
 			
 			for(Entry<Integer, String> e : queries.entrySet()) {
-				QueryParser qp = new QueryParser();
-				QueryRunner qr = new QueryRunner(ranked);
 				Node root = qp.parse(e.getValue());
 				List<Integer[]> result = qr.run(root);
 				// Write to file with special format for trec_eval.
