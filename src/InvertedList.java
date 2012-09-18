@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Class to represent the inverted list for a term.
+ */
 public class InvertedList {
 	private String term;
 	private String stemmedTerm;

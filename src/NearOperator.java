@@ -4,6 +4,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 
+/**
+ * Operator that performs the NEAR operation.
+ */
 public class NearOperator extends Operator {
 	private int distance;
 	
@@ -24,6 +27,9 @@ public class NearOperator extends Operator {
 		return getType() + ":" + distance;
 	}
 
+	/**
+	 * Performs a set union, keeping the max score (similar to OR).
+	 */
 	@Override
 	public Map<Integer, Integer> combine(List<Map<Integer, Integer>> l) {
 		Map<Integer, Integer> out = new HashMap<Integer, Integer>();

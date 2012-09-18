@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Node class to represent the parsed query as a tree.
+ */
 public class Node {
 	// Group 1 and Group 2 fields are mutually exclusive.
 	

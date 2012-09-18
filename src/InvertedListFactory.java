@@ -1,22 +1,42 @@
-import java.io.*;
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+
+/**
+ * Factory to parse the inverted list from disk into an InvertedList object.
+ */
 public class InvertedListFactory {
 	private String invPath;
+	
+	/**
+	 * Construct with path to directory of inverted list files.
+	 */
 	public InvertedListFactory(String p) {
 		if(p.charAt(p.length()-1) != '/') {
 			p = p + '/';
 		}
+		
 		invPath = p;
 	}
 	
+	/**
+	 * Reads inverted list file from disk and parses it into InvertedList.
+	 * 
+	 * It reads from the FIELD titled subdirectory for appropriate field-matching.
+	 */
 	public InvertedList getInvertedList(String word, String field) {
 		return parseFile(field + "/" + word);
 	}
 	
+	/**
+	 * Helper function that takes a canonical file name and outputs the
+	 * inverted list. This method appends the file extension and directory path,
+	 * so they must not be in the input.
+	 */
 	private InvertedList parseFile(String name) {
 		InvertedList invList = new InvertedList();
 		try {
@@ -28,11 +48,10 @@ public class InvertedListFactory {
 			String[] split;
 			int lineNumber = 0;
 			
-			
 			while ((strLine = br.readLine()) != null)   {
 				split = strLine.split(" ");
 				if(lineNumber == 0) {
-					// First line of file
+					// First line of file, special parsing
 					invList.setTerm(split[0]);
 					invList.setStemmedTerm(split[1]);
 					invList.setCollectionTermFreq(Integer.parseInt(split[2]));
@@ -55,7 +74,7 @@ public class InvertedListFactory {
 
 			in.close();
 		} catch (Exception e){
-			//System.err.println("Error: " + e.getMessage());
+			// Return the empty inverted list
 			return invList;
 		}
 		return invList;

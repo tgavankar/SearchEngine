@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 
 public class QueryRunner {	
@@ -129,7 +129,6 @@ public class QueryRunner {
 			return false;
 		}
 		else {
-			Map<Integer, InvertedListEntry> curr = allLists.get(currI);
 			Map<Integer, InvertedListEntry> next = allLists.get(currI+1);
 			for(int k=1; k<=maxDist; k++) {
 				if(next.get(doc).getPositionSet().contains(pos+k) && isNear(allLists, currI+1, doc, pos+k, maxDist)) {

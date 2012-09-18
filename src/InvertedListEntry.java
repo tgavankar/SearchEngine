@@ -1,7 +1,11 @@
-import java.util.List;
 import java.util.Set;
 
 
+/**
+ * Class to represent a specific entry in an inverted list. Each entry contains 
+ * information about which document the entry is for, as well as metadata such as
+ * frequency, length, and a position set (for quick contains() calls).
+ */
 public class InvertedListEntry {
 	private int docid;
 	private int totalFreq;
