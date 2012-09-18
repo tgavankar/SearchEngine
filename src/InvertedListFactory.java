@@ -13,8 +13,8 @@ public class InvertedListFactory {
 		invPath = p;
 	}
 	
-	public InvertedList getInvertedList(String word) {
-		return parseFile(word);
+	public InvertedList getInvertedList(String word, String field) {
+		return parseFile(field + "/" + word);
 	}
 	
 	private InvertedList parseFile(String name) {

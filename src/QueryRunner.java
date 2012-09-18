@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 
 public class QueryRunner {	
 	private boolean ranked;
-	private static final InvertedListFactory factory = new InvertedListFactory("invlist"); 
+	private static final InvertedListFactory factory = new InvertedListFactory(Config.invListDir); 
 	
 	public QueryRunner(boolean ranked) {
 		this.ranked = ranked;
@@ -40,7 +40,7 @@ public class QueryRunner {
 	
 	private Map<Integer, Integer> run(Node root, List<Map<Integer, Integer>> matches) {
 		if(root.getValue() != null) {
-			InvertedList il = factory.getInvertedList(root.getValue());
+			InvertedList il = factory.getInvertedList(root.getValue(), root.getField());
 			List<InvertedListEntry> ilel = il.getList();
 			Map<Integer, Integer> invLMap = new HashMap<Integer, Integer>();
 			for(InvertedListEntry ile : ilel) {
@@ -67,7 +67,7 @@ public class QueryRunner {
 		int maxDist = ((NearOperator) root.getOperator()).getDistance();
 		
 		for(Node child : root.getChildren()) {
-			InvertedList il = factory.getInvertedList(child.getValue());
+			InvertedList il = factory.getInvertedList(child.getValue(), child.getField());
 			List<InvertedListEntry> ilel = il.getList();
 			Map<Integer, InvertedListEntry> docs = new HashMap<Integer, InvertedListEntry>();
 			for(InvertedListEntry e : ilel) {

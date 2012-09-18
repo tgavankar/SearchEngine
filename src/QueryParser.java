@@ -7,8 +7,14 @@ public class QueryParser {
 	}
 	
 	public Node parse(String in) {
-		in = in.replaceAll("(\\w+)-(\\w+)", "#NEAR/1\\($1 $2\\)"); // Handle hyphenated words
-		Node root = new Node(new OrOperator());
+		in = in.replaceAll("(\\w+)-(\\w+)", "#" + Config.hyphenConvert + "\\($1 $2\\)"); // Handle hyphenated words
+		in = in.replaceAll("\\.\\s+", " "); // Handle non-field-defining periods
+		in = in.replaceAll("[,/;]", " "); // Handle other term-separating punctuation
+		in = in.replaceAll("'", ""); // Handle term-joining punctuation
+		in = in.replaceAll("\\s*\\(\\s*", "\\("); // Trim open paren for ops, "#OR ( a b)" -> "#OR(a b)"
+		in = in.replaceAll("\\s*\\)", "\\)"); // Trim close paren for ops, "#OR(a b )" -> "#OR(a b)"
+		in = in.replaceAll("\\s+", " "); // Trim extra spaces
+		Node root = new Node(Config.defaultIsOr ? new OrOperator() : new AndOperator());
 		parse(in, root);
 		if(root.getChildren().size() > 1)
 			return root;

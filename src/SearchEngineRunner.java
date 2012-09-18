@@ -12,19 +12,21 @@ import java.util.TreeSet;
 
 
 /**
- * Run with -Xmx512m (can be done with 300m).
+ * Run with -Xmx512m.
  *
  */
-public class main {
+public class SearchEngineRunner {
 	public static void main(String[] args) {
-		boolean ranked = true;
-		int numResults = 100;
+		boolean ranked = Config.ranked;
+		int numResults = Config.numResults;
+
+		long startTime = System.currentTimeMillis();
+		System.out.println("START " + startTime);
 		
-		Map<Integer, String> queries = parseQueries("queries.txt");
+		Map<Integer, String> queries = parseQueries(Config.queryFile);
 		
-		System.out.println("START");
 		try {
-			 BufferedWriter bw = new BufferedWriter(new FileWriter(new File("AND_BOW_RANKED.txt"), false));
+			 BufferedWriter bw = new BufferedWriter(new FileWriter(new File(Config.outFile), false));
 			
 			for(Entry<Integer, String> e : queries.entrySet()) {
 				QueryParser qp = new QueryParser();
@@ -48,7 +50,9 @@ public class main {
 		}
 
 		
-		System.out.println("SUCCESS");
+		long endTime = System.currentTimeMillis();
+		System.out.println("SUCCESS " + endTime);
+		System.out.println("RUNTIME: " + (endTime - startTime));
 	}
 	
 	private static Map<Integer, String> parseQueries(String filename) {
