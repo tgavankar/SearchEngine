@@ -1,0 +1,22 @@
+To run:
+1. Ensure you have the invlist/body and invlist/title directories
+   populated with the appropriate inverted list files. The files
+   should be named with <queryterm>.inv and be well-formed.
+2. Set the desired options in Config.java
+3. Run the JVM with the flag -Xmx512m so that you don't hit 
+   out of memory errors for large sets of queries.
+4. The main() method is found in SearchEngineRunner.java, so
+   you may have to point to that for whatever compiler you are
+   using. 
+   
+   
+What's in here:
+ * Report: Report.pdf
+ * Source Code: SearchEngine.zip
+ * Sample Unstructured Results: SampleResults/Results/[AND/OR]_(UN)RANKED_SAMPLE_RESULT.txt
+ * Sample Structured Results: SampleResults/Results/RANKED_STRUCT_SAMPLE_RESULT.txt
+ * Full Structured Queries: FullResults/Queries/all_struct_queries.txt
+ Bonus:
+   * Full query runs (and/or;struc/unstruct;rank/unranked): FullResults/*
+     * trec_eval scores: FullResults/trec_eval_scores.txt
+ 

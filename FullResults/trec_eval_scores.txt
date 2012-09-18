@@ -1,0 +1,222 @@
+num_q   Number of queries
+num_ret    Total number of documents retrieved over all queries
+num_rel    Total number of relevant documents over all queries
+num_rel_ret    Total number of relevant documents retrieved over all queries
+map    Mean Average Precision (MAP)
+gm_ap    Average Precision. Geometric Mean, q_score=log(MAX(map,.00001))
+R-prec    R-Precision (Precision after R (= num-rel for topic) documents retrieved)
+bpref    Binary Preference, top R judged nonrel
+recip_rank    Reciprical rank of top relevant document
+ircl_prn.0.00    Interpolated Recall - Precision Averages at 0.00 recall
+ircl_prn.0.10    Interpolated Recall - Precision Averages at 0.10 recall
+ircl_prn.0.20    Interpolated Recall - Precision Averages at 0.20 recall
+ircl_prn.0.30    Interpolated Recall - Precision Averages at 0.30 recall
+ircl_prn.0.40    Interpolated Recall - Precision Averages at 0.40 recall
+ircl_prn.0.50    Interpolated Recall - Precision Averages at 0.50 recall
+ircl_prn.0.60    Interpolated Recall - Precision Averages at 0.60 recall
+ircl_prn.0.70    Interpolated Recall - Precision Averages at 0.70 recall
+ircl_prn.0.80    Interpolated Recall - Precision Averages at 0.80 recall
+ircl_prn.0.90    Interpolated Recall - Precision Averages at 0.90 recall
+ircl_prn.1.00    Interpolated Recall - Precision Averages at 1.00 recall
+P5    Precision after 5 docs retrieved
+P10    Precision after 10 docs retrieved
+P15    Precision after 15 docs retrieved
+P20    Precision after 20 docs retrieved
+P30    Precision after 30 docs retrieved
+P100    Precision after 100 docs retrieved
+P200    Precision after 200 docs retrieved
+P500    Precision after 500 docs retrieved
+P1000    Precision after 1000 docs retrieved 
+
+
+
+AND_BOW_RANKED.txt
+num_q all 30
+num_ret all 2789
+num_rel all 531
+num_rel_ret all 377
+map all 0.3715
+gm_ap all 0.0266
+R-prec all 0.3623
+bpref all 0.4501
+recip_rank all 0.5275
+ircl_prn.0.00 all 0.5707
+ircl_prn.0.10 all 0.5523
+ircl_prn.0.20 all 0.5349
+ircl_prn.0.30 all 0.5232
+ircl_prn.0.40 all 0.4669
+ircl_prn.0.50 all 0.4336
+ircl_prn.0.60 all 0.3902
+ircl_prn.0.70 all 0.3098
+ircl_prn.0.80 all 0.2402
+ircl_prn.0.90 all 0.1530
+ircl_prn.1.00 all 0.1114
+P5 all 0.3867
+P10 all 0.3767
+P15 all 0.3333
+P20 all 0.2900
+P30 all 0.2544
+P100 all 0.1257
+P200 all 0.0628
+P500 all 0.0251
+P1000 all 0.0126
+
+
+AND_BOW_UNRANKED.txt
+num_q all 30
+num_ret all 2789
+num_rel all 531
+num_rel_ret all 30
+map all 0.0422
+gm_ap all 0.0001
+R-prec all 0.0416
+bpref all 0.0680
+recip_rank all 0.0737
+ircl_prn.0.00 all 0.0742
+ircl_prn.0.10 all 0.0523
+ircl_prn.0.20 all 0.0516
+ircl_prn.0.30 all 0.0516
+ircl_prn.0.40 all 0.0486
+ircl_prn.0.50 all 0.0486
+ircl_prn.0.60 all 0.0348
+ircl_prn.0.70 all 0.0301
+ircl_prn.0.80 all 0.0301
+ircl_prn.0.90 all 0.0301
+ircl_prn.1.00 all 0.0301
+P5 all 0.0400
+P10 all 0.0400
+P15 all 0.0400
+P20 all 0.0317
+P30 all 0.0244
+P100 all 0.0100
+P200 all 0.0050
+P500 all 0.0020
+P1000 all 0.0010
+
+
+OR_BOW_RANKED.txt
+num_q all 30
+num_ret all 3000
+num_rel all 531
+num_rel_ret all 287
+map all 0.1532
+gm_ap all 0.0013
+R-prec all 0.1681
+bpref all 0.2189
+recip_rank all 0.2096
+ircl_prn.0.00 all 0.2746
+ircl_prn.0.10 all 0.2731
+ircl_prn.0.20 all 0.2594
+ircl_prn.0.30 all 0.2010
+ircl_prn.0.40 all 0.1795
+ircl_prn.0.50 all 0.1642
+ircl_prn.0.60 all 0.1499
+ircl_prn.0.70 all 0.1351
+ircl_prn.0.80 all 0.1081
+ircl_prn.0.90 all 0.0653
+ircl_prn.1.00 all 0.0415
+P5 all 0.1600
+P10 all 0.1667
+P15 all 0.1644
+P20 all 0.1633
+P30 all 0.1489
+P100 all 0.0957
+P200 all 0.0478
+P500 all 0.0191
+P1000 all 0.0096
+
+
+OR_BOW_UNRANKED.txt
+num_q all 30
+num_ret all 3000
+num_rel all 531
+num_rel_ret all 4
+map all 0.0001
+gm_ap all 0.0000
+R-prec all 0.0005
+bpref all 0.0021
+recip_rank all 0.0016
+ircl_prn.0.00 all 0.0021
+ircl_prn.0.10 all 0.0000
+ircl_prn.0.20 all 0.0000
+ircl_prn.0.30 all 0.0000
+ircl_prn.0.40 all 0.0000
+ircl_prn.0.50 all 0.0000
+ircl_prn.0.60 all 0.0000
+ircl_prn.0.70 all 0.0000
+ircl_prn.0.80 all 0.0000
+ircl_prn.0.90 all 0.0000
+ircl_prn.1.00 all 0.0000
+P5 all 0.0000
+P10 all 0.0000
+P15 all 0.0000
+P20 all 0.0000
+P30 all 0.0000
+P100 all 0.0013
+P200 all 0.0007
+P500 all 0.0003
+P1000 all 0.0001
+
+
+OR_STRUC_RANKED.txt
+num_q all 27
+num_ret all 2425
+num_rel all 499
+num_rel_ret all 356
+map all 0.3491
+gm_ap all 0.0306
+R-prec all 0.3641
+bpref all 0.4338
+recip_rank all 0.4950
+ircl_prn.0.00 all 0.5800
+ircl_prn.0.10 all 0.5686
+ircl_prn.0.20 all 0.5543
+ircl_prn.0.30 all 0.5253
+ircl_prn.0.40 all 0.4292
+ircl_prn.0.50 all 0.3967
+ircl_prn.0.60 all 0.3527
+ircl_prn.0.70 all 0.2721
+ircl_prn.0.80 all 0.2294
+ircl_prn.0.90 all 0.1227
+ircl_prn.1.00 all 0.0839
+P5 all 0.3630
+P10 all 0.3481
+P15 all 0.3185
+P20 all 0.2833
+P30 all 0.2630
+P100 all 0.1319
+P200 all 0.0659
+P500 all 0.0264
+P1000 all 0.0132
+
+
+OR_STRUC_UNRANKED.txt
+num_q all 27
+num_ret all 2425
+num_rel all 499
+num_rel_ret all 31
+map all 0.0141
+gm_ap all 0.0001
+R-prec all 0.0191
+bpref all 0.0459
+recip_rank all 0.0491
+ircl_prn.0.00 all 0.0522
+ircl_prn.0.10 all 0.0274
+ircl_prn.0.20 all 0.0235
+ircl_prn.0.30 all 0.0230
+ircl_prn.0.40 all 0.0183
+ircl_prn.0.50 all 0.0183
+ircl_prn.0.60 all 0.0030
+ircl_prn.0.70 all 0.0030
+ircl_prn.0.80 all 0.0030
+ircl_prn.0.90 all 0.0030
+ircl_prn.1.00 all 0.0030
+P5 all 0.0074
+P10 all 0.0185
+P15 all 0.0173
+P20 all 0.0167
+P30 all 0.0136
+P100 all 0.0115
+P200 all 0.0057
+P500 all 0.0023
+P1000 all 0.0011
