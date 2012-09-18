@@ -12,14 +12,27 @@ import java.util.TreeMap;
 
 
 /**
- * Run with -Xmx512m.
- *
+ * Main class that runs the actual searches and experiments by reading queries
+ * from a structured text file and outputs the results to another text file.
+ * 
+ * This runner prints the execution time in ms, including time required for
+ * reading data from disk and parsing it, and also writing the output to disk.
+ * 
+ * 
+ * 
+ * ***IMPORTANT***: Note that for an input list of many queries (i.e. the 
+ * 		supplied queries.txt), the JVM should be run with flag -Xmx512m (to 
+ * 		increase max heap memory size).
  */
 public class SearchEngineRunner {
+	/**
+	 * Main method. Runs the experiment with the options defined in Config.java.
+	 */
 	public static void main(String[] args) {
 		boolean ranked = Config.ranked;
 		int numResults = Config.numResults;
 
+		// Grab and print starting time.
 		long startTime = System.currentTimeMillis();
 		System.out.println("START " + startTime);
 		
@@ -33,6 +46,7 @@ public class SearchEngineRunner {
 				QueryRunner qr = new QueryRunner(ranked);
 				Node root = qp.parse(e.getValue());
 				List<Integer[]> result = qr.run(root);
+				// Write to file with special format for trec_eval.
 				for(int i=0; i<Math.min(numResults, result.size()); i++) {
 					bw.write(e.getKey() + " ");
 					bw.write("Q0 ");
@@ -55,6 +69,10 @@ public class SearchEngineRunner {
 		System.out.println("RUNTIME: " + (endTime - startTime));
 	}
 	
+	/**
+	 * Helper method to parse the input file which is a list of
+	 * query IDs and queries.
+	 */
 	private static Map<Integer, String> parseQueries(String filename) {
 		Map<Integer, String> queries = new TreeMap<Integer, String>();
 		try {

@@ -3,6 +3,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+/**
+ * Set of stopwords with O(1) lookup for contains().
+ */
 public class StopWords {
 	private static final String [] stopwords = {
 		"a",

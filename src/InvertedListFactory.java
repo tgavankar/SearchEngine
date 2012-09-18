@@ -58,6 +58,7 @@ public class InvertedListFactory {
 					invList.setTotalTermCount(Integer.parseInt(split[3]));
 				}
 				else {
+					// Other lines, actual data
 					InvertedListEntry le = new InvertedListEntry();
 					le.setDocid(Integer.parseInt(split[0]));
 					le.setTotalFreq(Integer.parseInt(split[1]));
@@ -74,7 +75,7 @@ public class InvertedListFactory {
 
 			in.close();
 		} catch (Exception e){
-			// Return the empty inverted list
+			// Return the empty inverted list on error (i.e. file not found)
 			return invList;
 		}
 		return invList;
