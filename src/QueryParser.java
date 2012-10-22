@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Class that parses in a string query. It handles both structured
  * and unstructured queries, where unstructured queries are combined
@@ -25,14 +29,18 @@ public class QueryParser {
 	 */
 	public Node parse(String in) {
 		in = in.replaceAll("(\\w+)-(\\w+)", "#" + Config.hyphenConvert + "\\($1 $2\\)"); // Handle hyphenated words
-		in = in.replaceAll("\\.\\s+", " "); // Handle non-field-defining periods
-		in = in.replaceAll("[,/;]", " "); // Handle other term-separating punctuation
+		//in = in.replaceAll("\\.\\s+", " "); // Handle non-field-defining periods
 		in = in.replaceAll("'", ""); // Handle term-joining punctuation
 		in = in.replaceAll("\\s*\\(\\s*", "\\("); // Trim open paren for ops, "#OR ( a b)" -> "#OR(a b)"
 		in = in.replaceAll("\\s*\\)", "\\)"); // Trim close paren for ops, "#OR(a b )" -> "#OR(a b)"
 		in = in.replaceAll("\\s+", " "); // Trim extra spaces
-		Node root = new Node(Config.defaultIsOr ? new OrOperator() : new AndOperator());
-		parse(in, root);
+		// Convert #UW to #NEAR with all permutations
+		while(in.indexOf("#UW") > -1) {
+			in = in.replaceFirst("#UW\\/([0-9]+)\\(([^)]+)\\)", "#OR(" + convertWindow(in.substring(in.indexOf("#UW"))) + ")");
+		}
+
+		Node root = new Node(Config.defaultOperator);
+		parse(in, root, 1.0);
 		if(root.getChildren().size() > 1)
 			return root;
 		return root.getChildren().get(0);
@@ -42,11 +50,14 @@ public class QueryParser {
 	 * Recursive helper function that does the actual parsing of the string 
 	 * to a query tree and attaches it as a child of the parent Node.
 	 */
-	private Node parse(String in, Node parent) {
+	private Node parse(String in, Node parent, double weight) {
+		boolean isWeighted = (weight == Double.NEGATIVE_INFINITY);
+		double childWeight = Config.defaultNodeWeight;
+		double nodeWeight = Config.defaultNodeWeight;
 		for(int i=0; i<in.length(); i++) {
 			if(in.charAt(i) == '#') {
 				// The token is a structured operator.
-				Operator op = (Config.defaultIsOr ? new OrOperator() : new AndOperator()); //default op
+				Operator op = Config.defaultOperator; //default op
 				int iIncr = 0;
 				if(in.substring(i+1, i+1+2).equals("OR")) {
 					op = new OrOperator();
@@ -61,13 +72,18 @@ public class QueryParser {
 					op = new NearOperator(Integer.parseInt(in.substring(i+1+4+1, (in.substring(i+1+4+1).indexOf("("))+i+1+4+1)));
 					iIncr += 1 + 4 + 1 + (String.valueOf(((NearOperator) op).getDistance()).length()) + 1 + 1; // chars in #NEAR/number()
 				}
+				else if(in.substring(i+1, i+1+6).equals("WEIGHT")) {
+					op = new AndOperator();
+					iIncr += 1 + 6 + 1 + 1;
+					childWeight = Double.NEGATIVE_INFINITY;
+				}
 				
-				Node node = new Node(op);
+				Node node = new Node(op, nodeWeight);
 				parent.addChild(node);
 				String parenStr = getParenString(in.substring(i));
 				
 				// Recurse
-				parse(parenStr, node);
+				parse(parenStr, node, childWeight);
 				i += parenStr.length() + iIncr;
 			}
 			else {
@@ -78,15 +94,83 @@ public class QueryParser {
 					word = in.substring(i, i+endWord);
 				}
 				
+				if(isWeighted) {
+					try {
+						nodeWeight = Double.parseDouble(word);
+						i += String.valueOf(nodeWeight).length();
+						continue;
+					}
+					catch(NumberFormatException e) {
+						//nodeWeight = Config.defaultNodeWeight;
+					}
+				}
+				
 				// Handle stopwords
 				if(!sw.isStopword(word)) {
-					parent.addChild(new Node(word));
+					parent.addChild(new Node(word, nodeWeight));
 				}
 				i += word.length();
 			}
 		}
 		return parent;
 	}
+	
+	/**
+	 * Helper method that converts #UW -> #OR(#NEAR...)
+	 * @param in
+	 * @return
+	 */
+	private String convertWindow(String in) {
+		String dist = in.substring(4, in.indexOf("("));
+		List<List<String>> permutations = new ArrayList<List<String>>();
+		permutateList(new ArrayList<String>(), Arrays.asList(getParenString(in).split(" ")), permutations);
+		
+		String fullOut = "";
+		
+		for(List<String> p : permutations) {
+			String out = "";
+			for(String e : p) {
+				out += " " + e;
+			}
+			
+			if(out.length() > 0) {
+				out = out.substring(1);
+			}
+			
+			fullOut += " #NEAR/" + dist + "(" + out + ")"; 
+		}
+		
+		if(fullOut.length() > 0) {
+			fullOut = fullOut.substring(1);
+		}
+
+		return fullOut;
+	}
+	
+	// Source: http://setentiacuriosa.blogspot.com/2010/06/recursively-find-permutations-of-list.html
+	private void permutateList(List<String> startList, List<String> endList, List<List<String>> result) {
+	    if (endList.size() <= 1) {
+			List<String> permResult = new ArrayList<String>();
+			permResult.addAll(startList);
+			permResult.addAll(endList);
+			result.add(permResult);
+	    }
+	    else {
+			for(int i = 0; i < endList.size(); i++) {
+				List<String> newEndList = new ArrayList<String>();
+				for(int j = 0; j < i; j++) 
+					newEndList.add(endList.get(j));
+				for(int j = i+1; j < endList.size(); j++) 
+					newEndList.add(endList.get(j));
+				
+				List<String> newStartList = new ArrayList<String>();
+				newStartList.addAll(startList);
+				newStartList.add(endList.get(i));
+				permutateList(newStartList, newEndList, result);
+			}
+	    }
+	}
+	
 	
 	/**
 	 * Helper method to get substring inside of parentheses,

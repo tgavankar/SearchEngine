@@ -19,8 +19,8 @@ public class AndOperator extends Operator {
 	 * maps. Maintains the lowest seen value per key after intersection.
 	 */
 	@Override
-	public Map<Integer, Integer> combine(List<Map<Integer, Integer>> l) {
-		Map<Integer, Integer> out = new HashMap<Integer, Integer>();
+	public Map<Integer, Double> combine(List<Map<Integer, Double>> l) {
+		Map<Integer, Double> out = new HashMap<Integer, Double>();
 
 		// Perform intersection
 		if(l.size() > 0) {
@@ -31,12 +31,12 @@ public class AndOperator extends Operator {
 		}
 		
 		// Maintain min value per key
-		for(Entry<Integer, Integer> e : out.entrySet()) {
-			int min = e.getValue();
+		for(Entry<Integer, Double> e : out.entrySet()) {
+			double min = e.getValue();
 			for(int i=0; i<l.size(); i++) {
-				if(l.get(i).get(e.getKey()) < min) {
-					min = l.get(i).get(e.getKey());
-				}
+				//if(l.get(i).get(e.getKey()) < min) {
+					min += l.get(i).get(e.getKey());
+				//}
 			}
 			out.put(e.getKey(), min);
 		}

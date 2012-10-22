@@ -2,7 +2,9 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -56,6 +58,7 @@ public class InvertedListFactory {
 					invList.setStemmedTerm(split[1]);
 					invList.setCollectionTermFreq(Integer.parseInt(split[2]));
 					invList.setTotalTermCount(Integer.parseInt(split[3]));
+					invList.setDocFreq(Integer.parseInt(split[4]));
 				}
 				else {
 					// Other lines, actual data
@@ -63,11 +66,11 @@ public class InvertedListFactory {
 					le.setDocid(Integer.parseInt(split[0]));
 					le.setTotalFreq(Integer.parseInt(split[1]));
 					le.setDocLength(Integer.parseInt(split[2]));
-					Set<Integer> positions = new HashSet<Integer>();
+					List<Integer> positions = new ArrayList<Integer>();
 					for(int i=3; i<split.length; i++) {
 						positions.add(Integer.parseInt(split[i]));
 					}
-					le.setPositionSet(positions);
+					le.setPositionList(positions);
 					invList.addEntry(le);
 				}
 				lineNumber++;

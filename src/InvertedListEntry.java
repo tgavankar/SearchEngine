@@ -1,16 +1,17 @@
+import java.util.List;
 import java.util.Set;
 
 
 /**
  * Class to represent a specific entry in an inverted list. Each entry contains 
  * information about which document the entry is for, as well as metadata such as
- * frequency, length, and a position set (for quick contains() calls).
+ * frequency, length, and a position list.
  */
 public class InvertedListEntry {
 	private int docid;
 	private int totalFreq;
 	private int docLength;
-	private Set<Integer> positionSet;
+	private List<Integer> positionList;
 	
 	public int getDocid() {
 		return docid;
@@ -30,10 +31,10 @@ public class InvertedListEntry {
 	public void setDocLength(int docLength) {
 		this.docLength = docLength;
 	}
-	public Set<Integer> getPositionSet() {
-		return positionSet;
+	public List<Integer> getPositionList() {
+		return positionList;
 	}
-	public void setPositionSet(Set<Integer> positionSet) {
-		this.positionSet = positionSet;
+	public void setPositionList(List<Integer> positionList) {
+		this.positionList = positionList;
 	}
 }

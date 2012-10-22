@@ -18,11 +18,11 @@ import java.util.TreeSet;
  * queries, provided Config does not need to change.
  */
 public class QueryRunner {	
-	private boolean ranked;
+	private Ranking ranker;
 	private static final InvertedListFactory factory = new InvertedListFactory(Config.invListDir); 
 	
-	public QueryRunner(boolean ranked) {
-		this.ranked = ranked;
+	public QueryRunner(Ranking ranker) {
+		this.ranker = ranker;
 	}
 	
 	/**
@@ -30,24 +30,21 @@ public class QueryRunner {
 	 * unranked matching.
 	 */
 	public QueryRunner() {
-		this(false);
+		this(new NullRanking());
 	}
 	
 	/**
 	 * Runs the given query and returns the list of ranked docIDs with their score.
 	 */
-	public List<Integer[]> run(Node root) {
-		List<Map<Integer, Integer>> matches = new ArrayList<Map<Integer, Integer>>();
-		List<Integer[]> out = new ArrayList<Integer[]>();
+	public List<DocScore> run(Node root) {
+		List<Map<Integer, Double>> matches = new ArrayList<Map<Integer, Double>>();
+		List<DocScore> out = new ArrayList<DocScore>();
 		
-		Map<Integer, Integer> results = run(root, matches);
+		Map<Integer, Double> results = run(root, matches);
 		
 		// Get elements sorted by score and then docID
-		for (Entry<Integer, Integer> entry  : entriesSortedByValues(results)) {
-			Integer[] outa = new Integer[2];
-			outa[0] = entry.getKey();
-			outa[1] = entry.getValue();
-		    out.add(outa);
+		for (Entry<Integer, Double> entry  : entriesSortedByValues(results)) {
+		    out.add(new DocScore(entry.getKey(), entry.getValue()));
 		}
 		
 		return out;
@@ -59,20 +56,20 @@ public class QueryRunner {
 	 * is the combined score map of DocID to score, combined with the appropriate
 	 * score combination method. 
 	 */
-	private Map<Integer, Integer> run(Node root, List<Map<Integer, Integer>> matches) {
+	private Map<Integer, Double> run(Node root, List<Map<Integer, Double>> matches) {
 		if(root.getValue() != null) {
 			// Node is a value Node, so just get the inverted list.
 			InvertedList il = factory.getInvertedList(root.getValue(), root.getField());
 			List<InvertedListEntry> ilel = il.getList();
-			Map<Integer, Integer> invLMap = new HashMap<Integer, Integer>();
+			Map<Integer, Double> invLMap = new HashMap<Integer, Double>();
 			for(InvertedListEntry ile : ilel) {
-				invLMap.put(ile.getDocid(), ranked ? ile.getTotalFreq() : 1);	
+				invLMap.put(ile.getDocid(), ranker.getScore(root, il, ile));	
 			}
 			matches.add(invLMap);
 			return invLMap;
 		}
 		else {
-			// NOde is an operator Node, so get all the children and apply operator.
+			// Node is an operator Node, so get all the children and apply operator.
 			for(Node child : root.getChildren()) {
 				// Special case for handling NEAR operator
 				if(root.getOperator().getType().equals("NEAR")) {
@@ -93,7 +90,7 @@ public class QueryRunner {
 	 * Special case helper for handling the NEAR operator to get the
 	 * combined inverted list for documents that match.
 	 */
-	private Map<Integer, Integer> runNear(Node root, List<Map<Integer, Integer>> matches) {
+	private Map<Integer, Double> runNear(Node root, List<Map<Integer, Double>> matches) {
 		List<Map<Integer, InvertedListEntry>> allLists = new ArrayList<Map<Integer, InvertedListEntry>>();
 		int maxDist = ((NearOperator) root.getOperator()).getDistance();
 		
@@ -125,7 +122,7 @@ public class QueryRunner {
 		}
 		
 		
-		Map<Integer, Integer> nearMap = new HashMap<Integer, Integer>();
+		Map<Integer, Double> nearMap = new HashMap<Integer, Double>();
 		for(int i=0; i<allLists.size()-1; i++) {
 			Map<Integer, InvertedListEntry> curr = allLists.get(i);
 			Map<Integer, InvertedListEntry> next = allLists.get(i+1);
@@ -133,15 +130,15 @@ public class QueryRunner {
 			// Loop through all the docIDs
 			for(Integer doc : docIds) {
 				// Loop through all the positions for the first word in NEAR
-				for(Integer pos : curr.get(doc).getPositionSet()) {
+				for(Integer pos : curr.get(doc).getPositionList()) {
 					// Loop through all possible positions for the succeeding word
 					for(int k=1; k<=maxDist; k++) {
 						// Check that the next word is within maxDist of prev AS WELL as 
 						// recursing on the word after next being within maxDist of next,
 						// etc.
-						if(next.get(doc).getPositionSet().contains(pos+k) && isNear(allLists, i+1, doc, pos+k, maxDist)) {
+						if(next.get(doc).getPositionList().contains(pos+k) && isNear(allLists, i+1, doc, pos+k, maxDist)) {
 							// WE HAVE A MATCH FOR NEAR
-							nearMap.put(doc, ranked ? (nearMap.containsKey(doc) ? nearMap.get(doc)+1 : 1) : 1);
+							nearMap.put(doc, (nearMap.containsKey(doc) ? nearMap.get(doc)+1 : 1));
 							break;
 						}
 					}
@@ -166,7 +163,7 @@ public class QueryRunner {
 			Map<Integer, InvertedListEntry> next = allLists.get(currI+1);
 			
 			for(int k=1; k<=maxDist; k++) {
-				if(next.get(doc).getPositionSet().contains(pos+k)) {
+				if(next.get(doc).getPositionList().contains(pos+k)) {
 					return true;
 				}
 			}
@@ -176,7 +173,7 @@ public class QueryRunner {
 			// Recursive step, check current and next being within maxDist and recurse on next pair.
 			Map<Integer, InvertedListEntry> next = allLists.get(currI+1);
 			for(int k=1; k<=maxDist; k++) {
-				if(next.get(doc).getPositionSet().contains(pos+k) && isNear(allLists, currI+1, doc, pos+k, maxDist)) {
+				if(next.get(doc).getPositionList().contains(pos+k) && isNear(allLists, currI+1, doc, pos+k, maxDist)) {
 					return true;
 				}
 			}

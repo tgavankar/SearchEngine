@@ -22,5 +22,5 @@ public abstract class Operator {
 	 * Takes a list of map of docid to score, and combines them
 	 * into a single map of docid to score. 
 	 */
-	public abstract Map<Integer, Integer> combine(List<Map<Integer, Integer>> l);
+	public abstract Map<Integer, Double> combine(List<Map<Integer, Double>> matches);
 }

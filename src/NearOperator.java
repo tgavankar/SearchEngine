@@ -31,10 +31,10 @@ public class NearOperator extends Operator {
 	 * Performs a set union, keeping the max score (similar to OR).
 	 */
 	@Override
-	public Map<Integer, Integer> combine(List<Map<Integer, Integer>> l) {
-		Map<Integer, Integer> out = new HashMap<Integer, Integer>();
-		for(Map<Integer, Integer> m : l) {
-			for(Entry<Integer, Integer> e : m.entrySet()) {
+	public Map<Integer, Double> combine(List<Map<Integer, Double>> l) {
+		Map<Integer, Double> out = new HashMap<Integer, Double>();
+		for(Map<Integer, Double> m : l) {
+			for(Entry<Integer, Double> e : m.entrySet()) {
 				if(!out.containsKey(e.getKey())) {
 					out.put(e.getKey(), e.getValue());
 				}

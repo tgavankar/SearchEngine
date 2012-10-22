@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -16,13 +17,20 @@ public class Node {
 	private String value;
 	private String field;
 	
+	private double weight;
+	
 	
 	public Node(Operator op) {
-		operator = op;
-		children = new ArrayList<Node>();
+		this(op, Config.defaultNodeWeight);
 	}
 	
-	public Node(String s) {
+	public Node(Operator op, double weight) {
+		operator = op;
+		children = new ArrayList<Node>();
+		this.weight = weight;
+	}
+	
+	public Node(String s, double weight) {
 		int splitPoint = s.indexOf(".");
 		if(splitPoint < 0) {
 			value = s;
@@ -32,6 +40,11 @@ public class Node {
 			value = s.substring(0, splitPoint);
 			field = s.substring(splitPoint+1);			
 		}
+		this.weight = weight;
+	}
+	
+	public Node(String s) {
+		this(s, Config.defaultNodeWeight);
 	}
 	
 	public void addChild(Node c) {
@@ -54,13 +67,32 @@ public class Node {
 		return field;
 	}
 	
+	public void getLeafNodes(Set<String> set) {
+		if(getValue() != null) {
+			set.add(getValue());
+		}
+		else {
+			for(Node n : getChildren()) {
+				n.getLeafNodes(set);
+			}
+		}
+	}
+	
+	public void setWeight(double weight) {
+		this.weight = weight;
+	}
+	
+	public double getWeight() {
+		return this.weight;
+	}
+	
 	public String toString() {
 		String out = "";
 		if(value != null) {
-			out += "[" + field + ":" + value + "]";
+			out += "[" + weight + ":" + value + "]";
 		}
 		else {
-			out += operator.toString() + "(";
+			out += weight + ":" + operator.toString() + "(";
 			for(int i=0; i<children.size(); i++) {
 				out += children.get(i).toString();
 			}

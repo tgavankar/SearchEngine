@@ -12,14 +12,12 @@ public class Config {
 	/**
 	 * Whether the results should be ranked or not.
 	 */
-	public static final boolean ranked = true;
+	public static final Ranking ranker = new IndriRanking();
 	
 	/**
 	 * What the default bag-of-words operation should be.
-	 * True => OR
-	 * False => AND
 	 */
-	public static final boolean defaultIsOr = true;
+	public static final Operator defaultOperator = new AndOperator();
 	
 	/**
 	 * The location of the input query file. It should have the format:
@@ -29,14 +27,14 @@ public class Config {
 	 * 4:obama family tree
 	 * 7:#AND(obama #NEAR/1(family tree))
 	 */
-	public static final String queryFile = "struct_queries.txt";
+	public static final String queryFile = "STR-SDM.txt";
 	
 	/**
 	 * The location of the output file. This file does not
 	 * have to exist, but if it does, it will be overwritten
 	 * without confirmation.
 	 */
-	public static final String outFile = "tempout.txt";
+	public static final String outFile = "STR_SDM_INDRI.txt";
 	
 	
 	/**
@@ -48,6 +46,11 @@ public class Config {
 	 * The number of results you want to show per query after ranking. 
 	 */
 	public static final int numResults = 100;
+	
+	/**
+	 * The default field to use if none is given.
+	 */
+	public static final String defaultField = "body";
 	
 	/**
 	 * These shouldn't really be changed unless they
@@ -67,4 +70,9 @@ public class Config {
 	 * files should be placed within those directories.
 	 */
 	public static final String invListDir = "invlist";
+	
+	/**
+	 * The default weight given to operators if none is specified.
+	 */
+	public static final double defaultNodeWeight = 1.0;
 }

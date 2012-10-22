@@ -19,19 +19,24 @@ public class OrOperator extends Operator {
 	 * maintains the maximum value per key.
 	 */
 	@Override
-	public Map<Integer, Integer> combine(List<Map<Integer, Integer>> l) {
-		Map<Integer, Integer> out = new HashMap<Integer, Integer>();
-		for(Map<Integer, Integer> m : l) {
-			for(Entry<Integer, Integer> e : m.entrySet()) {
+	public Map<Integer, Double> combine(List<Map<Integer, Double>> l) {
+		Map<Integer, Double> out = new HashMap<Integer, Double>();
+		
+		for(Map<Integer, Double> m : l) {
+			for(Entry<Integer, Double> e : m.entrySet()) {
 				if(!out.containsKey(e.getKey())) {
-					out.put(e.getKey(), e.getValue());
+					out.put(e.getKey(), (1 - e.getValue()));
 				}
 				else {
-					out.put(e.getKey(), Math.max(out.get(e.getKey()), e.getValue()));
+					out.put(e.getKey(), out.get(e.getKey()) * (1 - e.getValue()));
 				}
 			}
 		}
 
+		for(Entry<Integer, Double> e : out.entrySet()) {
+			out.put(e.getKey(), (1 - e.getValue()));
+		}
+		
 		return out;
 	}
 }

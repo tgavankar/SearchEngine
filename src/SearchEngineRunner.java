@@ -29,11 +29,11 @@ public class SearchEngineRunner {
 	 * Main method. Runs the experiment with the options defined in Config.java.
 	 */
 	public static void main(String[] args) {
-		boolean ranked = Config.ranked;
+		Ranking ranker = Config.ranker;
 		int numResults = Config.numResults;
 
 		QueryParser qp = new QueryParser();
-		QueryRunner qr = new QueryRunner(ranked);
+		QueryRunner qr = new QueryRunner(ranker);
 		
 		// Grab and print starting time.
 		long startTime = System.currentTimeMillis();
@@ -46,14 +46,14 @@ public class SearchEngineRunner {
 			
 			for(Entry<Integer, String> e : queries.entrySet()) {
 				Node root = qp.parse(e.getValue());
-				List<Integer[]> result = qr.run(root);
+				List<DocScore> result = qr.run(root);
 				// Write to file with special format for trec_eval.
 				for(int i=0; i<Math.min(numResults, result.size()); i++) {
 					bw.write(e.getKey() + " ");
 					bw.write("Q0 ");
-					bw.write(result.get(i)[0] + " ");
+					bw.write(result.get(i).getDocId() + " ");
 					bw.write((i+1) + " ");
-					bw.write(result.get(i)[1] + " ");
+					bw.write(result.get(i).getScore() + " ");
 					bw.write("run-1");
 					bw.newLine();
 				}
